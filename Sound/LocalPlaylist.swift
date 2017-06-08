@@ -27,13 +27,13 @@ class LocalPlaylist: UIViewController, UITableViewDelegate, UITableViewDataSourc
         PlayList.dataSource=self
         PlayList.delegate=self
         
-        Data.clean_up()
+       // Data.clean_up()
         Data.output()
         items=Data.get_songs_reversed()
         
         ///Register cell
         let nibName = UINib(nibName: "PlayListCell", bundle:nil)
-        self.PlayList.registerNib(nibName, forCellReuseIdentifier: "PlayListUID")
+        self.PlayList.register(nibName, forCellReuseIdentifier: "PlayListUID")
     }
 
     override func didReceiveMemoryWarning()
@@ -48,14 +48,14 @@ class LocalPlaylist: UIViewController, UITableViewDelegate, UITableViewDataSourc
      
      **/
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         return items.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = tableView.dequeueReusableCellWithIdentifier("PlayListUID", forIndexPath: indexPath) as! PlayListCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PlayListUID", for: indexPath) as! PlayListCell
         cell.Song?.text=items[indexPath.row]["name"]
         cell.Artist?.text=items[indexPath.row]["artist"]
         
@@ -64,7 +64,7 @@ class LocalPlaylist: UIViewController, UITableViewDelegate, UITableViewDataSourc
             cell.Img?.image=Data.getImage(path)
         }
         
-        if cell.selected
+        if cell.isSelected
         {
             cell.backgroundColor = selected_cell
         }
@@ -76,7 +76,7 @@ class LocalPlaylist: UIViewController, UITableViewDelegate, UITableViewDataSourc
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         play_song?(items[indexPath.row])
     }

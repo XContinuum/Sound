@@ -36,7 +36,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
     
     
     var player:AVAudioPlayer = AVAudioPlayer()
-    var timer:NSTimer?
+    var timer:Timer?
     
     var errorDisplay:(String)->Void = {_ in}
     var loop = false
@@ -55,7 +55,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
         super.viewDidLoad()
         
         let thumb = UIImage(named: "thumb")
-        Slider.setThumbImage(thumb, forState: .Normal)
+        Slider.setThumbImage(thumb, for: UIControlState())
         
         if show_art_work==false
         {
@@ -63,7 +63,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
             newFrame.origin.y=66
             
             toolBar.frame=newFrame
-            artWork.hidden=true
+            artWork.isHidden=true
         }
     }
 
@@ -81,9 +81,9 @@ class Player: UIViewController, AVAudioPlayerDelegate
            - documentPath:
            - musicData: dictionary with keys "Title", "Artist" and "Duration", "start", "end"
     */
-    func setup_play_scene(soundData: NSData, _ documentPath: NSURL, _ musicData: Dictionary<String, String>) throws
+    func setup_play_scene(_ soundData: Data, _ documentPath: URL, _ musicData: Dictionary<String, String>) throws
     {
-        UIApplication.sharedApplication().beginReceivingRemoteControlEvents()
+        UIApplication.shared.beginReceivingRemoteControlEvents()
         try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
         try AVAudioSession.sharedInstance().setActive(true)
         
@@ -97,12 +97,12 @@ class Player: UIViewController, AVAudioPlayerDelegate
         Slider.maximumValue=Float(player.duration)
         Slider.value=0.0
         
-        PlayBtn.setImage(UIImage(named: "pause"), forState: .Normal)
+        PlayBtn.setImage(UIImage(named: "pause"), for: UIControlState())
         TitleLb.text = musicData["name"]
         ArtistLb.text = musicData["artist"]
         DurationLb.text = seconds2minutes((Float(player.duration)))
         
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "update", userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(Player.update), userInfo: nil, repeats: true)
         
         
         startSequence = musicData["start"] != nil ? min2sec(musicData["start"]!) : 0
@@ -119,7 +119,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
         
         
         // The file is probably corrupted
-        if let dur=Float(musicData["duration"]!) where abs(dur-Float(player.duration))>10
+        if let dur=Float(musicData["duration"]!), abs(dur-Float(player.duration))>10
         {
             print("Alert: Difference between the expected duration and the file duration is too large!")
             DurationLb.text="~\(seconds2minutes(dur))"
@@ -127,13 +127,13 @@ class Player: UIViewController, AVAudioPlayerDelegate
             too_large=true
             new_dur=dur
             
-            DurationLb.textColor=UIColor.redColor()
+            DurationLb.textColor=UIColor.red
         }
         // The file is OK
         else
         {
             too_large=false
-            DurationLb.textColor=UIColor.whiteColor()
+            DurationLb.textColor=UIColor.white
         }
         
         if loop==true
@@ -153,7 +153,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
             - path: path to the mp3 file
             - musicInfo: dictionary with keys "Title", "Artist" and "Duration"
      */
-    func play_song(music_info: Dictionary<String, String>)
+    func play_song(_ music_info: Dictionary<String, String>)
     {
         guard let path=music_info["path"] else
         {
@@ -163,14 +163,14 @@ class Player: UIViewController, AVAudioPlayerDelegate
         
         current_path=path
         
-        let fileManager = NSFileManager.defaultManager()
-        let URL = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+        let fileManager = FileManager.default
+        let URL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         
         if let documentDirectoryURL = URL.first
         {
-            let documentPath = documentDirectoryURL.URLByAppendingPathComponent(path+".mp3") // get path to song
+            let documentPath = documentDirectoryURL.appendingPathComponent(path+".mp3") // get path to song
             
-            guard let soundData = NSData(contentsOfURL: documentPath) else
+            guard let soundData = try? Data(contentsOf: documentPath) else
             {
                 print("\t\t ~ Music file doesn't exist.")
                 errorDisplay("Music file doesn't exist.")
@@ -197,12 +197,12 @@ class Player: UIViewController, AVAudioPlayerDelegate
      
      - Parameter seconds: seconds to be converted into minutes:seconds
      */
-    func seconds2minutes(seconds: Float) -> String
+    func seconds2minutes(_ seconds: Float) -> String
     {
         let mm = Int(seconds/60)
         let m = mm>9 ? "\(mm)" : "0\(mm)"
         
-        let ss = Int(seconds % 60)
+        let ss = Int(seconds.truncatingRemainder(dividingBy: 60))
         let s = ss>9 ? "\(ss)" : "0\(ss)"
         
         return m + ":" + s
@@ -211,7 +211,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
     /**
      
      */
-    func min2sec(str: String) -> Double
+    func min2sec(_ str: String) -> Double
     {
         var split=str.characters.split{$0 == ":"}.map(String.init)
         
@@ -251,7 +251,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
             // Song ended
             if loop==false
             {
-                PlayBtn.setImage(UIImage(named: "play"), forState: .Normal)
+                PlayBtn.setImage(UIImage(named: "play"), for: UIControlState())
             }
         }
         
@@ -268,14 +268,14 @@ class Player: UIViewController, AVAudioPlayerDelegate
      
      Parameter path:
      */
-    func return_mp3_info(path: NSURL) -> (title: String?, artist: String?, image: UIImage?)
+    func return_mp3_info(_ path: URL) -> (title: String?, artist: String?, image: UIImage?)
     {
         var title : String?
         var artist : String?
         var img : UIImage?
         
         
-        let playerItem = AVPlayerItem(URL: path)
+        let playerItem = AVPlayerItem(url: path)
         let metadataList = playerItem.asset.metadata
         
         for item in metadataList
@@ -293,8 +293,8 @@ class Player: UIViewController, AVAudioPlayerDelegate
             case "artist":
                 artist = value as? String
             
-            case "artwork" where value is NSData:
-                img = UIImage(data: value as! NSData)
+            case "artwork" where value is Data:
+                img = UIImage(data: value as! Data)
                 
             default:
                 continue
@@ -307,37 +307,37 @@ class Player: UIViewController, AVAudioPlayerDelegate
     /**
      Sets title, artist and art work from the background sound into the off screen view.
      */
-    func set_offScreen_data(path: NSURL)
+    func set_offScreen_data(_ path: URL)
     {
         let info=return_mp3_info(path)
         
         var dict: [String: AnyObject] = [
-            MPMediaItemPropertyTitle: info.title ?? "",
-            MPMediaItemPropertyArtist: info.artist ?? "",
-            MPNowPlayingInfoPropertyPlaybackRate: player.currentTime,
-            MPMediaItemPropertyPlaybackDuration: player.duration
+            MPMediaItemPropertyTitle: info.title as AnyObject ?? "" as AnyObject,
+            MPMediaItemPropertyArtist: info.artist as AnyObject ?? "" as AnyObject,
+            MPNowPlayingInfoPropertyPlaybackRate: player.currentTime as AnyObject,
+            MPMediaItemPropertyPlaybackDuration: player.duration as AnyObject
             //MPMediaItemPropertyAlbumTitle: "Album",
             //MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentPlaybackTime,
         ]
         
         var newFrame=toolBar.frame
-        if let unwrapped_image=info.image where show_art_work==true
+        if let unwrapped_image=info.image, show_art_work==true
         {
             dict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: unwrapped_image)
             artWork.image=unwrapped_image
             
             newFrame.origin.y=434
-            artWork.hidden=false
+            artWork.isHidden=false
         }
         else
         {
             newFrame.origin.y=66
-            artWork.hidden=true
+            artWork.isHidden=true
         }
         
         toolBar.frame=newFrame
         
-        MPNowPlayingInfoCenter.defaultCenter().nowPlayingInfo = dict
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = dict
     }
     
     /*
@@ -346,49 +346,49 @@ class Player: UIViewController, AVAudioPlayerDelegate
     
     */
     
-    @IBAction func PlayPause(sender: UIButton)
+    @IBAction func PlayPause(_ sender: UIButton)
     {
-        if player.playing
+        if player.isPlaying
         {
             // PAUSE THE SONG
             player.pause()
-            sender.setImage(UIImage(named: "play"), forState: .Normal)
+            sender.setImage(UIImage(named: "play"), for: UIControlState())
         }
         else
         {
             // PLAY THE SONG
             player.play()
-            sender.setImage(UIImage(named: "pause"), forState: .Normal)
+            sender.setImage(UIImage(named: "pause"), for: UIControlState())
         }
     }
     
-    @IBAction func RepeatShuffle(sender: UIButton)
+    @IBAction func RepeatShuffle(_ sender: UIButton)
     {
         if loop==true
         {
             // Stop loop
-            sender.setImage(UIImage(named: "neutral"), forState: .Normal)
+            sender.setImage(UIImage(named: "neutral"), for: UIControlState())
             player.numberOfLoops = 0
             loop=false
         }
         else
         {
             // Start loop
-            sender.setImage(UIImage(named: "repeat"), forState: .Normal)
+            sender.setImage(UIImage(named: "repeat"), for: UIControlState())
             
             player.numberOfLoops = -1
             loop=true
         }
     }
     
-    @IBAction func ChangePlay(sender: UISlider)
+    @IBAction func ChangePlay(_ sender: UISlider)
     {
         moving_slider=true
         player.currentTime=Double(sender.value)
     }
     
     
-    @IBAction func editDone(sender: UITextField)
+    @IBAction func editDone(_ sender: UITextField)
     {
         endSequence=min2sec(endField.text!)
         startSequence=min2sec(startField.text!)
@@ -396,7 +396,7 @@ class Player: UIViewController, AVAudioPlayerDelegate
         print("\(startSequence):\(endSequence)")
     }
     
-    @IBAction func saveInterval(sender: UIButton)
+    @IBAction func saveInterval(_ sender: UIButton)
     {
         let t:Database=Database()
         

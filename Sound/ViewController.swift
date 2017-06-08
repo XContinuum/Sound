@@ -27,7 +27,7 @@ class ViewController: UIViewController
     {
         super.viewDidLoad()
         
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ViewController.dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
 
@@ -52,7 +52,7 @@ class ViewController: UIViewController
         mainFrame.origin.x=mainFrame.size.width*2
         C.view.frame=mainFrame
         
-        Paging.contentSize=CGSizeMake(mainFrame.size.width*3, mainFrame.size.height)
+        Paging.contentSize=CGSize(width: mainFrame.size.width*3, height: mainFrame.size.height)
         
         
         /// Initialize closures
@@ -76,25 +76,25 @@ class ViewController: UIViewController
     
     
     ///
-    func display_error(msg: String)
+    func display_error(_ msg: String)
     {
         ErrorMsg.text=msg
         
-        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations:
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations:
             { _ -> Void in
        
                 var frame=self.ErrorBox.frame
                 frame.origin.y=227
                 
-                self.ErrorBox.frame=CGRectMake(frame.origin.x,227,frame.size.width,frame.size.height)
+                self.ErrorBox.frame=CGRect(x: frame.origin.x,y: 227,width: frame.size.width,height: frame.size.height)
             }, completion: {_ in print("Done")})
         
         
     }
     
-    @IBAction func hide_msg_box(sender: UIButton)
+    @IBAction func hide_msg_box(_ sender: UIButton)
     {
-        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations:
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions.curveEaseOut, animations:
             { _ -> Void in
                 
                 var frame=self.ErrorBox.frame
@@ -105,9 +105,9 @@ class ViewController: UIViewController
             }, completion: nil)
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle
+    override var preferredStatusBarStyle : UIStatusBarStyle
     {
-        return UIStatusBarStyle.LightContent
+        return UIStatusBarStyle.lightContent
     }
     
     //Calls this function when the tap is recognized.

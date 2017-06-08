@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Foundation
 
-class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
+class Youtube: UIViewController, URLSessionDelegate, UITableViewDelegate
 {
     @IBOutlet weak var YoutubeLink: UITextField!
     @IBOutlet weak var progressBar: UIProgressView!
@@ -26,7 +27,7 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
     
     
     /* Download */
-    var task : NSURLSessionTask!
+    var task : URLSessionTask!
     
     var percentageWritten:Float = 0.0
     var taskTotalBytesWritten = 0
@@ -40,10 +41,10 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
      NOT SURE WHAT THIS DOES
      
      */
-    lazy var session : NSURLSession = {
-        let config = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+    lazy var session : Foundation.URLSession = {
+        let config = URLSessionConfiguration.ephemeral
         config.allowsCellularAccess = false
-        let session = NSURLSession(configuration: config, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
+        let session = Foundation.URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
         return session
     }()
   
@@ -54,7 +55,7 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
         super.viewDidLoad()
 
         progressBar.setProgress(0.0, animated: true)  //set progressBar to 0 at start
-        YoutubeLink.keyboardAppearance = UIKeyboardAppearance.Dark
+        YoutubeLink.keyboardAppearance = UIKeyboardAppearance.dark
         
         let Liked_Videos = LikedVideos(nibName: "LikedVideos", bundle: nil)
         
@@ -73,17 +74,17 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
      
      - Returns: randomly generated String
      */
-    func randomStringWithLength(len : Int) -> NSString
+    func randomStringWithLength(_ len : Int) -> NSString
     {
         let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         
         let randomString : NSMutableString = NSMutableString(capacity: len)
         
-        for (var i=0; i < len; i++)
+        for _ in 0 ..< len
         {
             let length = UInt32 (letters.length)
             let rand = arc4random_uniform(length)
-            randomString.appendFormat("%C", letters.characterAtIndex(Int(rand)))
+            randomString.appendFormat("%C", letters.character(at: Int(rand)))
         }
         
         return randomString
@@ -95,13 +96,13 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
      
      - Parameter arr: array with strings to be trimmed
      */
-    func trim_array(arr:Array<String>)->Array<String>
+    func trim_array(_ arr:Array<String>)->Array<String>
     {
         var result=[String]()
         
         for i in 0...(arr.count-1)
         {
-            result.insert(arr[i].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()),atIndex:i)
+            result.insert(arr[i].trimmingCharacters(in: CharacterSet.whitespacesAndNewlines),at:i)
         }
         
         return result
@@ -116,18 +117,18 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
             - response:
             - error:
      */
-    func retreive_response(data: NSData?, response: NSURLResponse?, error: NSError?) -> Void
+    func retreive_response(_ data: Foundation.Data?, response: URLResponse?, error: NSError?) -> Void
     {
         if (error == nil)
         {
-            if let resp = response as? NSHTTPURLResponse, let new_data=data where resp.statusCode == 200
+            if let resp = response as? HTTPURLResponse, let new_data=data, resp.statusCode == 200
             {
                 /*
                 Error Block
                 */
                 do
                 {
-                    let responseJSON =  try  NSJSONSerialization.JSONObjectWithData(new_data, options: NSJSONReadingOptions.AllowFragments) as! NSDictionary;
+                    let responseJSON =  try  JSONSerialization.jsonObject(with: new_data, options: JSONSerialization.ReadingOptions.allowFragments) as! NSDictionary;
                         
                     self.urlString = responseJSON["link"] as? String
                     self.song_title = responseJSON["title"] as? String
@@ -170,15 +171,19 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
      
      - Parameter videoURL: link to the **Youtube** video
      */
-    func get_mp3_link(videoURL: String)
+    func get_mp3_link(_ videoURL: String)
     {
-        let url = NSURL(string: "http://www.youtubeinmp3.com/fetch/?format=JSON&video=\(videoURL)")
-        let local_session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: nil, delegateQueue: nil)
-        let request = NSMutableURLRequest(URL: url!)
-        request.HTTPMethod = "GET"
+        let url = URL(string: "http://www.youtubeinmp3.com/fetch/?format=JSON&video=\(videoURL)")
+        let local_session = Foundation.URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: nil)
+        let request = NSMutableURLRequest(url: url!)
+        request.httpMethod = "GET"
         
         
-        let local_task = local_session.dataTaskWithRequest(request, completionHandler: retreive_response)
+        //let local_task = local_session.dataTask(with: request, completionHandler: retreive_response) #old SWIFT 2
+        let local_task = Foundation.URLSession.shared.dataTask(with: request as URLRequest) {
+            data, response, error in
+        }
+        
         local_task.resume()
     }
     
@@ -186,7 +191,7 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
     /**
     
     */
-    func download_song(link: String)
+    func download_song(_ link: String)
     {
         progressCount.text = "0%"
         
@@ -196,14 +201,14 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
             return
         }
         
-        let url = NSURL(string:link)!
-        let req = NSMutableURLRequest(URL:url)
-        let task = self.session.downloadTaskWithRequest(req)
+        let url = URL(string:link)!
+        let req = NSMutableURLRequest(url:url)
+        let task = self.session.downloadTask(with: req as URLRequest) //SWIFT 2 without 'as URLRequest'
         self.task = task
         task.resume()
     }
     
-    func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten writ: Int64, totalBytesExpectedToWrite exp: Int64)
+    func URLSession(_ session: Foundation.URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten writ: Int64, totalBytesExpectedToWrite exp: Int64)
     {
         download=true
         taskTotalBytesWritten = Int(writ)
@@ -218,26 +223,26 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
         progressCount.text = String(format: "%.01f", percentageWritten*100) + "%"
     }
     
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?)
+    func URLSession(_ session: Foundation.URLSession, task: URLSessionTask, didCompleteWithError error: NSError?)
     {
         print("\n********************************")
         print("Completed: \(error)")
         print("********************************\n")
     }
     
-    func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL)
+    func URLSession(_ session: Foundation.URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingToURL location: URL)
     {
-        let documentsDirectoryURL =  NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+        let documentsDirectoryURL =  FileManager().urls(for: .documentDirectory, in: .userDomainMask).first!
         let random_name=(self.randomStringWithLength(8) as String)
-        let destinationUrl = documentsDirectoryURL.URLByAppendingPathComponent(random_name+".mp3")
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(random_name+".mp3")
         
         print("Finished downloading!")
         download=false
         
         // Hide all elements
-        progressCount.hidden=true
-        progressBar.hidden=true
-        bytesDownloaded.hidden=true
+        progressCount.isHidden=true
+        progressBar.isHidden=true
+        bytesDownloaded.isHidden=true
         
         progressCount.text = "0%"
         bytesDownloaded.text = "Memory"
@@ -249,7 +254,7 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
         {
             do {
                 // after downloading your file you need to move it to your destination url
-                try NSFileManager().moveItemAtURL(location, toURL: destinationUrl)
+                try FileManager().moveItem(at: location, to: destinationUrl)
                 print("File moved to documents folder")
             
                 var extrapolate=(self.song_title ?? "").characters.split{$0 == "-"}.map(String.init)
@@ -279,13 +284,13 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
     
     */
     
-    @IBAction func ClearData(sender: UIButton)
+    @IBAction func ClearData(_ sender: UIButton)
     {
         Data.clear_data("Test")
         updateSongs()
     }
     
-    @IBAction func download(sender: UIButton)
+    @IBAction func download(_ sender: UIButton)
     {
         if download==false
         {
@@ -294,15 +299,15 @@ class Youtube: UIViewController, NSURLSessionDelegate, UITableViewDelegate
             get_mp3_link(YoutubeLink.text!)
             
             // Show all elements
-            progressCount.hidden=false
-            progressBar.hidden=false
-            bytesDownloaded.hidden=false
+            progressCount.isHidden=false
+            progressBar.isHidden=false
+            bytesDownloaded.isHidden=false
         }
     }
     
-    @IBAction func field_selected(sender: UITextField)
+    @IBAction func field_selected(_ sender: UITextField)
     {
-        let pb: UIPasteboard = UIPasteboard.generalPasteboard()
+        let pb: UIPasteboard = UIPasteboard.general
         sender.text = pb.string
     }
 

@@ -24,7 +24,7 @@ class Database
      
      - Parameter n: integer to be formatted
      */
-    func over_ten(n: Int) -> String
+    func over_ten(_ n: Int) -> String
     {
         return n<10 ? "0\(n)" : "\(n)"
     }
@@ -36,16 +36,16 @@ class Database
      */
     func get_date()->String
     {
-        let date = NSDate()
-        let calender = NSCalendar.currentCalendar()
-        let components = calender.components([.Year, .Month, .Day, .Hour, .Minute], fromDate: date)
+        let date = Date()
+        let calender = Calendar.current
+        let components = (calender as NSCalendar).components([.year, .month, .day, .hour, .minute], from: date)
         
-        let time=[over_ten(components.hour),
-                  over_ten(components.minute),
+        let time=[over_ten(components.hour!),
+                  over_ten(components.minute!),
             
-                  over_ten(components.day),
-                  over_ten(components.month),
-                  over_ten(components.year)]
+                  over_ten(components.day!),
+                  over_ten(components.month!),
+                  over_ten(components.year!)]
         
         return "\(time[0]):\(time[1]) \(time[2])-\(time[3])-\(time[4])"
     }
@@ -59,9 +59,9 @@ class Database
      - song-path: local path to the mp3 file
      - duration: duration of the song
      */
-    func add_song(artist:String, _ song_name: String, _ song_path: String, _ duration: String)
+    func add_song(_ artist:String, _ song_name: String, _ song_path: String, _ duration: String)
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         let piece=["artist":artist,
                    "name":song_name,
                    "path":song_path,
@@ -71,10 +71,10 @@ class Database
         
         let key=defaultsKeys.testKey
         
-        if let data_music = defaults.arrayForKey(key)
+        if let data_music = defaults.array(forKey: key)
         {
             var new_data=data_music
-            new_data.insert(piece, atIndex: new_data.count)
+            new_data.insert(piece, at: new_data.count)
             
             defaults.setValue(new_data, forKey: key)
         }
@@ -93,9 +93,9 @@ class Database
      
      - Parameter key: the key to the data
      */
-    func clear_data(key:String)
+    func clear_data(_ key:String)
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         defaults.setValue(nil, forKey: key)
     }
     
@@ -104,10 +104,10 @@ class Database
      */
     func get_songs() -> Array<Dictionary<String,String>>
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         let key=defaultsKeys.testKey
         
-        return (defaults.arrayForKey(key) as? Array<Dictionary<String,String>>) ?? []
+        return (defaults.array(forKey: key) as? Array<Dictionary<String,String>>) ?? []
     }
     
     /**
@@ -115,11 +115,11 @@ class Database
      */
     func get_songs_reversed() -> Array<Dictionary<String,String>>
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         let key=defaultsKeys.testKey
-        let result=(defaults.arrayForKey(key) as? Array<Dictionary<String,String>>) ?? []
+        let result=(defaults.array(forKey: key) as? Array<Dictionary<String,String>>) ?? []
         
-        return result.reverse()
+        return result.reversed()
     }
     
     
@@ -128,18 +128,18 @@ class Database
      
      - Parameter row: rows to delete, has to be always from greatest to lowest
      */
-    func delete_rows(row:Array<Int>)
+    func delete_rows(_ row:Array<Int>)
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         let key=defaultsKeys.testKey
        
-        if var data_music = defaults.arrayForKey(key)
+        if var data_music = defaults.array(forKey: key)
         {
             for i in row
             {
                 if i<data_music.count
                 {
-                   data_music.removeAtIndex(i)
+                   data_music.remove(at: i)
                 }
             }
             
@@ -155,16 +155,16 @@ class Database
     {
         var table=get_songs()
         var delete=[Int]()
-        let fileManager = NSFileManager.defaultManager()
+        let fileManager = FileManager.default
         
-        let URL = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+        let URL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         
-        if let documentDirectoryURL: NSURL = URL.first
+        if let documentDirectoryURL: Foundation.URL = URL.first
         {
             for i in 0...(table.count-1)
             {
-                let documentPath = documentDirectoryURL.URLByAppendingPathComponent((table[i]["path"] ?? "") + ".mp3") // get path to song
-                let soundData:NSData? = NSData(contentsOfURL: documentPath)
+                let documentPath = documentDirectoryURL.appendingPathComponent((table[i]["path"] ?? "") + ".mp3") // get path to song
+                let soundData:Data? = try? Data(contentsOf: documentPath)
                 
                 if soundData==nil
                 {
@@ -174,7 +174,7 @@ class Database
         }
         
         // Delete
-        delete_rows(delete.sort(>))
+        delete_rows(delete.sorted(by: >))
     }
     
     
@@ -183,18 +183,18 @@ class Database
      - Parameter str:
      - Parameter maximum:
      */
-    func format(str:String?, _ maximum: Int = 10)->String
+    func format(_ str:String?, _ maximum: Int = 10)->String
     {
         if let s=str
         {
             if s.characters.count>maximum
             {
-                let index = s.endIndex.advancedBy(maximum-s.characters.count)
-                return s.substringToIndex(index)
+                let index = s.characters.index(s.endIndex, offsetBy: maximum-s.characters.count)
+                return s.substring(to: index)
             }
             else
             {
-                return s+String(count: maximum-s.characters.count, repeatedValue: (" " as Character))
+                return s+String(repeating: String((" " as Character)), count: maximum-s.characters.count)
             }
         }
         
@@ -212,15 +212,15 @@ class Database
         //artist name path repeats duration date
         var elements=["artist", "title", "path", "repeats", "duration", "start", "end", "date"]
         elements=elements.map{format($0)}
-        print(elements.joinWithSeparator(space)+"\n")
+        print(elements.joined(separator: space)+"\n")
         
         for row in table
         {
             let item: Array<String?>=[row["artist"],row["name"],row["path"],row["repeats"],row["duration"], row["start"], row["end"], row["date"]]
             
-            let mapped: Array<String>=item.enumerate().map{$0 == item.count-1 ? format($1,20) : format($1)}
+            let mapped: Array<String>=item.enumerated().map{$0 == item.count-1 ? format($1,20) : format($1)}
             
-            print(mapped.joinWithSeparator(space))
+            print(mapped.joined(separator: space))
         }
         print("\n\n")
     }
@@ -235,12 +235,12 @@ class Database
          - start:
          - end:
     **/
-    func change_interval_play(index:Int, _ start: String, _  end: String)
+    func change_interval_play(_ index:Int, _ start: String, _  end: String)
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         let key=defaultsKeys.testKey
         
-        if var data_music = defaults.arrayForKey(key)
+        if var data_music = defaults.array(forKey: key)
         {
             var tmp:Dictionary<String, String>=data_music[index] as! Dictionary<String, String>
             
@@ -254,18 +254,23 @@ class Database
     }
     
 
-    func get_index_from_path(path: String) -> Int?
+    func get_index_from_path(_ path: String) -> Int?
     {
-        let defaults = NSUserDefaults.standardUserDefaults()
+        let defaults = UserDefaults.standard
         let key=defaultsKeys.testKey
         
-        if var data_music = defaults.arrayForKey(key)
+        if var data_music = defaults.array(forKey: key)
         {
             for i in 0..<data_music.count
             {
-                if data_music[i]["path"] as! String==path
+                if let pref = data_music[i] as? [String: Any]
                 {
-                    return i
+                    var prefToLoad = pref["path"] as! String
+                    
+                    if prefToLoad==path
+                    {
+                       return i
+                    }
                 }
             }
         }
@@ -280,14 +285,14 @@ class Database
     
     */
     
-    func return_mp3_info(path: NSURL) -> (title: String?, artist: String?, image: UIImage?)
+    func return_mp3_info(_ path: URL) -> (title: String?, artist: String?, image: UIImage?)
     {
         var title : String?
         var artist : String?
         var img : UIImage?
         
         
-        let playerItem = AVPlayerItem(URL: path)
+        let playerItem = AVPlayerItem(url: path)
         let metadataList = playerItem.asset.metadata
         
         for item in metadataList
@@ -305,8 +310,8 @@ class Database
             case "artist":
                 artist = value as? String
                 
-            case "artwork" where value is NSData:
-                img = UIImage(data: value as! NSData)
+            case "artwork" where value is Data:
+                img = UIImage(data: value as! Data)
                 
             default:
                 continue
@@ -317,14 +322,14 @@ class Database
     }
     
     
-    func getImage(path: String) -> UIImage?
+    func getImage(_ path: String) -> UIImage?
     {
-        let fileManager = NSFileManager.defaultManager()
-        let URL = fileManager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
+        let fileManager = FileManager.default
+        let URL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         
         if let documentDirectoryURL = URL.first
         {
-            let documentPath = documentDirectoryURL.URLByAppendingPathComponent(path+".mp3") // get path to song
+            let documentPath = documentDirectoryURL.appendingPathComponent(path+".mp3") // get path to song
             
             return return_mp3_info(documentPath).image
         }

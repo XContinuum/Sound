@@ -174,7 +174,7 @@ class Youtube: UIViewController, URLSessionDelegate, UITableViewDelegate
     func get_mp3_link(_ videoURL: String)
     {
         let url = URL(string: "http://www.youtubeinmp3.com/fetch/?format=JSON&video=\(videoURL)")
-        let local_session = Foundation.URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: nil)
+        //let local_session = Foundation.URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: nil)
         let request = NSMutableURLRequest(url: url!)
         request.httpMethod = "GET"
         
@@ -182,6 +182,7 @@ class Youtube: UIViewController, URLSessionDelegate, UITableViewDelegate
         //let local_task = local_session.dataTask(with: request, completionHandler: retreive_response) #old SWIFT 2
         let local_task = Foundation.URLSession.shared.dataTask(with: request as URLRequest) {
             data, response, error in
+            self.retreive_response(data, response: response, error: nil)
         }
         
         local_task.resume()

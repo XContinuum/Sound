@@ -8,18 +8,111 @@
 
 import UIKit
 
-class ViewController: UIViewController {
 
-    override func viewDidLoad() {
+class ViewController: UIViewController
+{
+    
+    @IBOutlet var Paging: UIScrollView!
+    var A: LocalPlaylist!
+    var B: Player!
+    var C: Youtube!
+    
+    var download=false
+    
+    // Error box
+    @IBOutlet var ErrorBox: UIView! // y=226 px
+    @IBOutlet var ErrorMsg: UILabel!
+    
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "dismissKeyboard")
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+
+        
+        A = LocalPlaylist(nibName: "LocalPlaylist", bundle: nil)
+        B = Player(nibName: "Player", bundle: nil)
+        C = Youtube(nibName: "Youtube", bundle: nil)
+        
+        
+        self.addChildViewController(A)
+        self.addChildViewController(B)
+        self.addChildViewController(C)
+        
+        Paging.addSubview(A.view)
+        Paging.addSubview(B.view)
+        Paging.addSubview(C.view)
+        
+        
+        var mainFrame=A.view.frame
+        mainFrame.origin.x=mainFrame.size.width
+        B.view.frame=mainFrame
+        mainFrame.origin.x=mainFrame.size.width*2
+        C.view.frame=mainFrame
+        
+        Paging.contentSize=CGSizeMake(mainFrame.size.width*3, mainFrame.size.height)
+        
+        
+        /// Initialize closures
+        A.play_song={(music_data: Dictionary<String, String>) -> Void in
+            self.B.play_song(music_data)
+            self.Paging.setContentOffset(CGPoint(x: self.Paging.frame.width, y: 0), animated: true)
+        }
+        
+        C.updateSongs={() in self.A.reloadList()}
+        
+        B.errorDisplay=display_error
+        C.errorDisplay=display_error
+        
+        display_error("None")
     }
 
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-
-
+    
+    
+    ///
+    func display_error(msg: String)
+    {
+        ErrorMsg.text=msg
+        
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations:
+            { _ -> Void in
+       
+                var frame=self.ErrorBox.frame
+                frame.origin.y=227
+                
+                self.ErrorBox.frame=CGRectMake(frame.origin.x,227,frame.size.width,frame.size.height)
+            }, completion: {_ in print("Done")})
+        
+        
+    }
+    
+    @IBAction func hide_msg_box(sender: UIButton)
+    {
+        UIView.animateWithDuration(0.5, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations:
+            { _ -> Void in
+                
+                var frame=self.ErrorBox.frame
+                frame.origin.y=667
+                
+                self.ErrorBox.frame=frame//CGRectMake(frame.origin.x,227,frame.size.width,frame.size.height)
+                
+            }, completion: nil)
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle
+    {
+        return UIStatusBarStyle.LightContent
+    }
+    
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard()
+    {
+        view.endEditing(true)
+    }
 }
-

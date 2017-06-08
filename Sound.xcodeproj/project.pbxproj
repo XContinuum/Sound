@@ -12,6 +12,17 @@
 		ED4124C31DC405F00094BD1B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED4124C11DC405F00094BD1B /* Main.storyboard */; };
 		ED4124C51DC405F00094BD1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED4124C41DC405F00094BD1B /* Assets.xcassets */; };
 		ED4124C81DC405F00094BD1B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED4124C61DC405F00094BD1B /* LaunchScreen.storyboard */; };
+		ED4124D11DC54C4C0094BD1B /* LocalPlaylist.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4124CF1DC54C4C0094BD1B /* LocalPlaylist.swift */; };
+		ED4124D21DC54C4C0094BD1B /* LocalPlaylist.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED4124D01DC54C4C0094BD1B /* LocalPlaylist.xib */; };
+		ED4DDFA71DC6EC3F0030CF12 /* PlayListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4DDFA51DC6EC3F0030CF12 /* PlayListCell.swift */; };
+		ED4DDFA81DC6EC3F0030CF12 /* PlayListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED4DDFA61DC6EC3F0030CF12 /* PlayListCell.xib */; };
+		ED4DDFAA1DC6F7AE0030CF12 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4DDFA91DC6F7AE0030CF12 /* Database.swift */; };
+		ED4DDFB41DC79A850030CF12 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED4DDFB21DC79A850030CF12 /* Player.swift */; };
+		ED4DDFB51DC79A850030CF12 /* Player.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED4DDFB31DC79A850030CF12 /* Player.xib */; };
+		ED52CD261DCC1DB0004FA36A /* Youtube.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED52CD241DCC1DB0004FA36A /* Youtube.swift */; };
+		ED52CD271DCC1DB0004FA36A /* Youtube.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED52CD251DCC1DB0004FA36A /* Youtube.xib */; };
+		ED5A97211DD24C7A00B3B8B9 /* LikedVideos.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED5A971F1DD24C7A00B3B8B9 /* LikedVideos.swift */; };
+		ED5A97221DD24C7A00B3B8B9 /* LikedVideos.xib in Resources */ = {isa = PBXBuildFile; fileRef = ED5A97201DD24C7A00B3B8B9 /* LikedVideos.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +33,17 @@
 		ED4124C41DC405F00094BD1B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ED4124C71DC405F00094BD1B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED4124C91DC405F00094BD1B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED4124CF1DC54C4C0094BD1B /* LocalPlaylist.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalPlaylist.swift; sourceTree = "<group>"; };
+		ED4124D01DC54C4C0094BD1B /* LocalPlaylist.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LocalPlaylist.xib; sourceTree = "<group>"; };
+		ED4DDFA51DC6EC3F0030CF12 /* PlayListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayListCell.swift; sourceTree = "<group>"; };
+		ED4DDFA61DC6EC3F0030CF12 /* PlayListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayListCell.xib; sourceTree = "<group>"; };
+		ED4DDFA91DC6F7AE0030CF12 /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		ED4DDFB21DC79A850030CF12 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		ED4DDFB31DC79A850030CF12 /* Player.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Player.xib; sourceTree = "<group>"; };
+		ED52CD241DCC1DB0004FA36A /* Youtube.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Youtube.swift; sourceTree = "<group>"; };
+		ED52CD251DCC1DB0004FA36A /* Youtube.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Youtube.xib; sourceTree = "<group>"; };
+		ED5A971F1DD24C7A00B3B8B9 /* LikedVideos.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LikedVideos.swift; sourceTree = "<group>"; };
+		ED5A97201DD24C7A00B3B8B9 /* LikedVideos.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LikedVideos.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,13 +77,88 @@
 			isa = PBXGroup;
 			children = (
 				ED4124BD1DC405F00094BD1B /* AppDelegate.swift */,
-				ED4124BF1DC405F00094BD1B /* ViewController.swift */,
-				ED4124C11DC405F00094BD1B /* Main.storyboard */,
+				ED4DDFAB1DC6F83A0030CF12 /* Classes */,
+				ED4DDFB61DC7D23B0030CF12 /* Main */,
+				ED52CD281DCC1EC6004FA36A /* Slides */,
+				ED4124D41DC54C620094BD1B /* Other */,
+			);
+			path = Sound;
+			sourceTree = "<group>";
+		};
+		ED4124D31DC54C570094BD1B /* LocalPlaylist */ = {
+			isa = PBXGroup;
+			children = (
+				ED4124CF1DC54C4C0094BD1B /* LocalPlaylist.swift */,
+				ED4124D01DC54C4C0094BD1B /* LocalPlaylist.xib */,
+				ED4DDFA51DC6EC3F0030CF12 /* PlayListCell.swift */,
+				ED4DDFA61DC6EC3F0030CF12 /* PlayListCell.xib */,
+			);
+			name = LocalPlaylist;
+			sourceTree = "<group>";
+		};
+		ED4124D41DC54C620094BD1B /* Other */ = {
+			isa = PBXGroup;
+			children = (
 				ED4124C41DC405F00094BD1B /* Assets.xcassets */,
 				ED4124C61DC405F00094BD1B /* LaunchScreen.storyboard */,
 				ED4124C91DC405F00094BD1B /* Info.plist */,
 			);
-			path = Sound;
+			name = Other;
+			sourceTree = "<group>";
+		};
+		ED4DDFAB1DC6F83A0030CF12 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				ED4DDFA91DC6F7AE0030CF12 /* Database.swift */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		ED4DDFAD1DC799950030CF12 /* Player */ = {
+			isa = PBXGroup;
+			children = (
+				ED4DDFB21DC79A850030CF12 /* Player.swift */,
+				ED4DDFB31DC79A850030CF12 /* Player.xib */,
+			);
+			name = Player;
+			sourceTree = "<group>";
+		};
+		ED4DDFB61DC7D23B0030CF12 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				ED4124BF1DC405F00094BD1B /* ViewController.swift */,
+				ED4124C11DC405F00094BD1B /* Main.storyboard */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		ED52CD231DCC1D87004FA36A /* Youtube */ = {
+			isa = PBXGroup;
+			children = (
+				ED52CD241DCC1DB0004FA36A /* Youtube.swift */,
+				ED52CD251DCC1DB0004FA36A /* Youtube.xib */,
+				ED5A971E1DD249B400B3B8B9 /* Parse */,
+			);
+			name = Youtube;
+			sourceTree = "<group>";
+		};
+		ED52CD281DCC1EC6004FA36A /* Slides */ = {
+			isa = PBXGroup;
+			children = (
+				ED4124D31DC54C570094BD1B /* LocalPlaylist */,
+				ED4DDFAD1DC799950030CF12 /* Player */,
+				ED52CD231DCC1D87004FA36A /* Youtube */,
+			);
+			name = Slides;
+			sourceTree = "<group>";
+		};
+		ED5A971E1DD249B400B3B8B9 /* Parse */ = {
+			isa = PBXGroup;
+			children = (
+				ED5A971F1DD24C7A00B3B8B9 /* LikedVideos.swift */,
+				ED5A97201DD24C7A00B3B8B9 /* LikedVideos.xib */,
+			);
+			name = Parse;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -96,6 +193,12 @@
 				TargetAttributes = {
 					ED4124B91DC405F00094BD1B = {
 						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 4752B9296N;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -122,9 +225,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED4DDFB51DC79A850030CF12 /* Player.xib in Resources */,
+				ED4DDFA81DC6EC3F0030CF12 /* PlayListCell.xib in Resources */,
+				ED52CD271DCC1DB0004FA36A /* Youtube.xib in Resources */,
+				ED5A97221DD24C7A00B3B8B9 /* LikedVideos.xib in Resources */,
 				ED4124C81DC405F00094BD1B /* LaunchScreen.storyboard in Resources */,
 				ED4124C51DC405F00094BD1B /* Assets.xcassets in Resources */,
 				ED4124C31DC405F00094BD1B /* Main.storyboard in Resources */,
+				ED4124D21DC54C4C0094BD1B /* LocalPlaylist.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,8 +243,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED4124D11DC54C4C0094BD1B /* LocalPlaylist.swift in Sources */,
 				ED4124C01DC405F00094BD1B /* ViewController.swift in Sources */,
 				ED4124BE1DC405F00094BD1B /* AppDelegate.swift in Sources */,
+				ED4DDFAA1DC6F7AE0030CF12 /* Database.swift in Sources */,
+				ED52CD261DCC1DB0004FA36A /* Youtube.swift in Sources */,
+				ED4DDFB41DC79A850030CF12 /* Player.swift in Sources */,
+				ED4DDFA71DC6EC3F0030CF12 /* PlayListCell.swift in Sources */,
+				ED5A97211DD24C7A00B3B8B9 /* LikedVideos.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +361,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Sound/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = mm.Sound;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -258,7 +374,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Sound/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = mm.Sound;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -284,6 +402,7 @@
 				ED4124CE1DC405F10094BD1B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

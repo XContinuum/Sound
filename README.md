@@ -8,7 +8,7 @@
 
 ## Screenshots
 
-  <img src="Sound/Images/screenshots/playlist.png" width="30%"/> <img src="Sound/Images/screenshots/player.png" width="30%"/> <img src="Sound/Images/screenshots/download.png" width="30%"/>
+  <img src="Sound/Images/screenshots/playlist.PNG" width="30%"/> <img src="Sound/Images/screenshots/player.PNG" width="30%"/> <img src="Sound/Images/screenshots/download.PNG" width="30%"/>
 
 ## Languages
 

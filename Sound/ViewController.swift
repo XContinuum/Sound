@@ -47,12 +47,16 @@ class ViewController: UIViewController
         
         
         var mainFrame=A.view.frame
-        mainFrame.origin.x=mainFrame.size.width
+        mainFrame.origin.x=375//mainFrame.size.width
+        mainFrame.size.height=667
+        print("= \(mainFrame.size.height)");
+        print("~ \(mainFrame.origin.x)");
         B.view.frame=mainFrame
-        mainFrame.origin.x=mainFrame.size.width*2
+        mainFrame.origin.x=375*2//mainFrame.size.width*2
+        print("~ \(mainFrame.origin.x)");
         C.view.frame=mainFrame
         
-        Paging.contentSize=CGSize(width: mainFrame.size.width*3, height: mainFrame.size.height)
+        Paging.contentSize=CGSize(width: 375*3 /* mainFrame.size.width*3 */, height: mainFrame.size.height)
         
         
         /// Initialize closures
